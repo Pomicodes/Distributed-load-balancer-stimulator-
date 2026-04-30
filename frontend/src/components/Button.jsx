@@ -48,10 +48,10 @@ export default function Button({
 
 const variants = {
   primary: {
-    background: linear - gradient(180deg, ${ theme.accent } 0 %, #06b6d4 100 %),
+    background: `linear-gradient(180deg, ${theme.accent} 0%, #06b6d4 100%)`,
     color: '#042f2e',
     borderColor: 'rgba(34, 211, 238, 0.5)',
-    boxShadow: 0 0 20px rgba(34, 211, 238, 0.25),
+    boxShadow: '0 0 20px rgba(34, 211, 238, 0.25)',
   },
   danger: {
     background: theme.dangerSoft,

@@ -1,18 +1,12 @@
-import { Inter } from 'next/font/google';
+'use client';
 
-import './globals.css';
+import Dashboard from '@/components/Dashboard';
+import SimulationView from '@/components/SimulationView';
 
-const inter = Inter({ subsets: ['latin'] });
-
-export const metadata = {
-  title: 'Load balancer simulator',
-  description: 'Distributed load balancer simulation dashboard',
-};
-
-export default function RootLayout({ children }) {
+export default function Home() {
   return (
-    <html lang="en" className={inter.className}>
-      <body>{children}</body>
-    </html>
+    <Dashboard>
+      <SimulationView />
+    </Dashboard>
   );
 }

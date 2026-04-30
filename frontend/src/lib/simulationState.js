@@ -1,13 +1,31 @@
 /**
  * Normalize GET /state payloads from different backend shapes.
  */
+
+function normalizeServerRecord(s, index) {
+  if (s == null || typeof s !== 'object') return null;
+  const id = s.id ?? s.server_id ?? s.serverId ?? index;
+  const active = s.active_connections ?? s.activeConnections ?? s.active ?? 0;
+  const total = s.total_requests ?? s.totalRequests ?? s.requests ?? 0;
+  return {
+    ...s,
+    id,
+    active_connections: Number(active) || 0,
+    total_requests: Number(total) || 0,
+  };
+}
+
 export function getServersFromState(data) {
+  let raw = [];
   if (data == null) return [];
-  if (Array.isArray(data)) return data;
-  if (Array.isArray(data.servers)) return data.servers;
-  if (Array.isArray(data.backend)) return data.backend;
-  if (Array.isArray(data.backend_servers)) return data.backend_servers;
-  return [];
+  if (Array.isArray(data)) raw = data;
+  else if (Array.isArray(data.servers)) raw = data.servers;
+  else if (Array.isArray(data.backend)) raw = data.backend;
+  else if (Array.isArray(data.backend_servers)) raw = data.backend_servers;
+  else if (Array.isArray(data.backends)) raw = data.backends;
+  else if (Array.isArray(data.pool)) raw = data.pool;
+  if (!Array.isArray(raw)) return [];
+  return raw.map(normalizeServerRecord).filter(Boolean);
 }
 
 export function isRunningFromState(data) {

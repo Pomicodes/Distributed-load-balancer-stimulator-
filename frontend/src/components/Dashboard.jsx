@@ -9,9 +9,11 @@ export default function Dashboard({
   children,
   className = '',
 }) {
+  const shellClass = ['dashboard-shell', className].filter(Boolean).join(' ');
   return (
-    <div className={className} style={styles.root}>
-      <div style={styles.gridBg} aria-hidden />
+    <div className={shellClass} style={styles.root}>
+      <div className="dashboard-shell__aurora" aria-hidden />
+      <div className="dashboard-shell__mesh" aria-hidden />
       <header style={styles.header}>
         <div style={styles.headerRow}>
           <div style={styles.brandMark} aria-hidden>
@@ -37,19 +39,8 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
-    background: theme.bgGradient,
     color: theme.text,
     overflow: 'hidden',
-  },
-  gridBg: {
-    position: 'absolute',
-    inset: 0,
-    backgroundImage: `
-      linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px)
-    `,
-    backgroundSize: '48px 48px',
-    pointerEvents: 'none',
   },
   header: {
     position: 'relative',

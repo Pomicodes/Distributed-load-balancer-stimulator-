@@ -1,0 +1,162 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #070b12;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+}
+
+/* —— Animated dashboard backdrop —— */
+.dashboard-shell {
+  background: #070b12;
+}
+
+.dashboard-shell__aurora {
+  position: absolute;
+  inset: -30% -20% -20% -20%;
+  background:
+    radial-gradient(circle at 18% 32%, rgba(34, 211, 238, 0.32), transparent 42%),
+    radial-gradient(circle at 82% 48%, rgba(99, 102, 241, 0.22), transparent 46%),
+    radial-gradient(circle at 52% 88%, rgba(52, 211, 153, 0.14), transparent 38%),
+    radial-gradient(circle at 65% 18%, rgba(192, 132, 252, 0.12), transparent 36%);
+  animation: dashboard-aurora-drift 18s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dashboard-shell__mesh {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 140, 248, 0.04) 1px, transparent 1px);
+  background-size: 52px 52px;
+  animation: dashboard-grid-drift 28s linear infinite;
+  pointer-events: none;
+  opacity: 0.9;
+  z-index: 0;
+}
+
+@keyframes dashboard-aurora-drift {
+  0% {
+    transform: translate(-5%, -4%) scale(1) rotate(0deg);
+    filter: hue-rotate(0deg) saturate(1);
+  }
+  100% {
+    transform: translate(6%, 5%) scale(1.08) rotate(2deg);
+    filter: hue-rotate(14deg) saturate(1.12);
+  }
+}
+
+@keyframes dashboard-grid-drift {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 52px 52px, -52px 26px;
+  }
+}
+
+/* Stacked request bar: slow light sweep */
+.request-dist-track {
+  position: relative;
+}
+
+.request-dist-track::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.14) 48%,
+    transparent 58%
+  );
+  background-size: 220% 100%;
+  animation: chart-sheen 3.8s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.65;
+}
+
+.request-dist-segment {
+  overflow: hidden;
+}
+
+.chart-bar-fill {
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-bar-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, 0.22) 50%, transparent 65%);
+  background-size: 200% 100%;
+  animation: chart-sheen 2.8s ease-in-out infinite;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+@keyframes chart-sheen {
+  0% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -120% 0;
+  }
+}
+
+/* Fleet timeline SVG shell */
+.fleet-sparkline-svg {
+  display: block;
+  width: 100%;
+  height: 76px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.07) 0%, rgba(7, 11, 18, 0.35) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.14);
+}
+
+.fleet-sparkline-dot {
+  animation: fleet-dot-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes fleet-dot-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-shell__aurora,
+  .dashboard-shell__mesh,
+  .request-dist-track::after,
+  .chart-bar-fill::after,
+  .fleet-sparkline-dot {
+    animation: none !important;
+  }
+
+  .dashboard-shell__aurora {
+    filter: none;
+  }
+}

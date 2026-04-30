@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { SimulationChartsPanel, MAX_HISTORY } from '@/components/charts';
+import { useChartDemo } from '@/hooks/useChartDemo';
 import { startSimulation, stopSimulation } from '@/services/api';
 import { useSimulation } from '@/hooks/useSimulation';
 import {
@@ -19,12 +21,35 @@ export default function SimulationView() {
   const { data, error, loading, refresh } = useSimulation();
   const [actionBusy, setActionBusy] = useState(false);
   const [actionError, setActionError] = useState(null);
+  const [metricsHistory, setMetricsHistory] = useState([]);
+
+  const forceChartDemo = process.env.NEXT_PUBLIC_CHART_DEMO === 'true';
+  const offlineChartDemo = Boolean(error) && !loading;
+  const chartDemo = forceChartDemo || offlineChartDemo;
+
+  const { servers: demoServers, history: demoHistory } = useChartDemo(chartDemo);
 
   const servers = getServersFromState(data);
-  const running = isRunningFromState(data);
-  const algorithm = getAlgorithmFromState(data);
-  const totalReq = totalRequestsAcross(servers);
-  const totalActive = totalActiveAcross(servers);
+  const displayServers = chartDemo ? demoServers : servers;
+  const displayHistory = chartDemo ? demoHistory : metricsHistory;
+  const running = chartDemo || isRunningFromState(data);
+  const algorithm = chartDemo ? 'round-robin · demo' : getAlgorithmFromState(data);
+  const totalReq = totalRequestsAcross(displayServers);
+  const totalActive = totalActiveAcross(displayServers);
+
+  useEffect(() => {
+    if (data == null || chartDemo) return;
+    setMetricsHistory((prev) => {
+      const next = [
+        ...prev,
+        {
+          totalRequests: totalRequestsAcross(getServersFromState(data)),
+          totalActive: totalActiveAcross(getServersFromState(data)),
+        },
+      ];
+      return next.slice(-MAX_HISTORY);
+    });
+  }, [data, chartDemo]);
 
   async function handleStart() {
     setActionError(null);
@@ -97,6 +122,15 @@ export default function SimulationView() {
         </div>
       </section>
 
+      {chartDemo && (
+        <div role="status" style={styles.demoBanner}>
+          Showing <strong style={styles.demoStrong}>demo traffic</strong> so charts stay visible
+          {offlineChartDemo ? ' while the API is unreachable' : ''}
+          {forceChartDemo && !offlineChartDemo ? ' (NEXT_PUBLIC_CHART_DEMO)' : ''}. Live data replaces this when
+          the backend responds.
+        </div>
+      )}
+
       {(actionError || error) && (
         <div role="alert" style={styles.alert}>
           {actionError || error}
@@ -110,7 +144,7 @@ export default function SimulationView() {
       <section style={styles.stats} aria-label="Fleet summary">
         <div style={styles.statCard}>
           <span style={styles.statLabel}>Backend servers</span>
-          <span style={styles.statValue}>{servers.length}</span>
+          <span style={styles.statValue}>{displayServers.length}</span>
         </div>
         <div style={styles.statCard}>
           <span style={styles.statLabel}>Active connections</span>
@@ -122,9 +156,11 @@ export default function SimulationView() {
         </div>
       </section>
 
+      <SimulationChartsPanel servers={displayServers} history={displayHistory} />
+
       <section aria-label="Server pool">
         <h2 style={styles.sectionTitle}>Server pool</h2>
-        {servers.length === 0 ? (
+        {!chartDemo && servers.length === 0 ? (
           <div style={styles.empty}>
             No servers returned from <code style={styles.code}>/state</code>. Confirm the backend exposes a{' '}
             <code style={styles.code}>servers</code> array (or adjust normalization in{' '}
@@ -132,7 +168,7 @@ export default function SimulationView() {
           </div>
         ) : (
           <div style={styles.grid}>
-            {servers.map((server, i) => (
+            {displayServers.map((server, i) => (
               <ServerCard key={`${server.id ?? i}-${i}`} server={server} />
             ))}
           </div>
@@ -208,6 +244,19 @@ const styles = {
     border: `1px solid rgba(248, 113, 113, 0.35)`,
     color: theme.danger,
     fontSize: '0.875rem',
+  },
+  demoBanner: {
+    padding: '0.75rem 1rem',
+    borderRadius: '0.5rem',
+    background: 'rgba(251, 191, 36, 0.12)',
+    border: '1px solid rgba(251, 191, 36, 0.35)',
+    color: theme.text,
+    fontSize: '0.8125rem',
+    lineHeight: 1.45,
+  },
+  demoStrong: {
+    color: theme.warning,
+    fontWeight: 700,
   },
   hint: {
     margin: 0,
