@@ -1,0 +1,21 @@
+/** Load-balancer / network dashboard palette */
+export const theme = {
+  bg: '#070b12',
+  bgGradient: 'linear-gradient(160deg, #070b12 0%, #0c1525 45%, #0a1628 100%)',
+  surface: '#0f172a',
+  surfaceHover: '#151f33',
+  panel: 'rgba(15, 23, 42, 0.85)',
+  border: 'rgba(56, 189, 248, 0.12)',
+  borderGlow: 'rgba(34, 211, 238, 0.35)',
+  text: '#e2e8f0',
+  textMuted: '#94a3b8',
+  accent: '#22d3ee',
+  accentSoft: 'rgba(34, 211, 238, 0.14)',
+  accentText: '#a5f3fc',
+  success: '#34d399',
+  successSoft: 'rgba(52, 211, 153, 0.15)',
+  danger: '#f87171',
+  dangerSoft: 'rgba(248, 113, 113, 0.15)',
+  warning: '#fbbf24',
+  shadow: '0 4px 24px rgba(0, 0, 0, 0.35)',
+};
