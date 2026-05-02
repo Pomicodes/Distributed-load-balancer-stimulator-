@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+redis
+upstash-redis
+pydantic
+pydantic-settings
+websockets
+python-dotenv
+numpy
+asyncio
