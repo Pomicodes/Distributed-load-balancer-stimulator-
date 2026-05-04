@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Core app (app/) uses only the Python standard library — no extra packages
 # to import or run algorithms/simulation. Use Python 3.9+.
 #
@@ -7,3 +8,15 @@
 
 pytest>=7.0
 3
+=======
+fastapi
+uvicorn
+redis
+upstash-redis
+pydantic
+pydantic-settings
+websockets
+python-dotenv
+numpy
+asyncio
+>>>>>>> 894b085d3ca0d253b68a3a4263d9aee0bb08665b
