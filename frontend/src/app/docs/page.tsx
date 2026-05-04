@@ -250,14 +250,14 @@ export default function DocsPage() {
 
         <DocSection title="Fault Mitigation" icon={ShieldCheck} id="fault-mitigation">
           <p>
-            Our simulation engine incorporates a stochastic failure injector. Each backend node possesses a 'Failure Probability' attribute, which is monitored by the coordination layer.
+            Our simulation engine incorporates a stochastic failure injector. Each backend node possesses a &quot;Failure Probability&quot; attribute, which is monitored by the coordination layer.
           </p>
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex items-start gap-4 p-6 rounded-3xl bg-slate-950/50 border border-white/5">
               <Zap className="w-6 h-6 text-yellow-500 mt-1" />
               <div>
                 <h5 className="font-bold text-white mb-1">Instant Failover</h5>
-                <p className="text-sm text-slate-500 leading-relaxed">When a node transitions to 'Unhealthy', all distributed LB nodes detect the state change via Redis within milliseconds.</p>
+                <p className="text-sm text-slate-500 leading-relaxed">When a node transitions to &quot;Unhealthy&quot;, all distributed LB nodes detect the state change via Redis within milliseconds.</p>
               </div>
             </div>
             <div className="flex items-start gap-4 p-6 rounded-3xl bg-slate-950/50 border border-white/5">
