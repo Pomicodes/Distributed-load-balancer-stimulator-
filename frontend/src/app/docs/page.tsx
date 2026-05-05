@@ -132,7 +132,13 @@ const TableOfContents = ({ sections, activeSection }: { sections: { id: string; 
 
 export default function DocsPage() {
   const [activeSection, setActiveSection] = useState('');
-  const sectionIds = ['distributed-core', 'routing-logic', 'fault-mitigation', 'performance-metrics'];
+  const sectionIds = [
+    'distributed-core',
+    'routing-logic',
+    'fault-mitigation',
+    'performance-metrics',
+    'api-reference'  // added new section id
+  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -158,7 +164,8 @@ export default function DocsPage() {
     { id: 'distributed-core', title: 'Distributed Core' },
     { id: 'routing-logic', title: 'Routing Logic' },
     { id: 'fault-mitigation', title: 'Fault Mitigation' },
-    { id: 'performance-metrics', title: 'Performance Metrics' }
+    { id: 'performance-metrics', title: 'Performance Metrics' },
+    { id: 'api-reference', title: 'API Reference' }
   ];
 
   return (
@@ -243,14 +250,14 @@ export default function DocsPage() {
 
         <DocSection title="Fault Mitigation" icon={ShieldCheck} id="fault-mitigation">
           <p>
-            Our simulation engine incorporates a stochastic failure injector. Each backend node possesses a 'Failure Probability' attribute, which is monitored by the coordination layer.
+            Our simulation engine incorporates a stochastic failure injector. Each backend node possesses a &quot;Failure Probability&quot; attribute, which is monitored by the coordination layer.
           </p>
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex items-start gap-4 p-6 rounded-3xl bg-slate-950/50 border border-white/5">
               <Zap className="w-6 h-6 text-yellow-500 mt-1" />
               <div>
                 <h5 className="font-bold text-white mb-1">Instant Failover</h5>
-                <p className="text-sm text-slate-500 leading-relaxed">When a node transitions to 'Unhealthy', all distributed LB nodes detect the state change via Redis within milliseconds.</p>
+                <p className="text-sm text-slate-500 leading-relaxed">When a node transitions to &quot;Unhealthy&quot;, all distributed LB nodes detect the state change via Redis within milliseconds.</p>
               </div>
             </div>
             <div className="flex items-start gap-4 p-6 rounded-3xl bg-slate-950/50 border border-white/5">
@@ -263,7 +270,7 @@ export default function DocsPage() {
           </div>
         </DocSection>
 
-        {/* NEW FEATURE: Performance Metrics Section */}
+        {/* PERFORMANCE METRICS SECTION */}
         <DocSection title="Performance Metrics" icon={TrendingUp} id="performance-metrics">
           <p>
             Real-world performance characteristics observed under simulated production load. Metrics are aggregated across all load balancer instances and backend pools.
@@ -297,6 +304,75 @@ export default function DocsPage() {
           <div className="mt-6 p-4 rounded-xl bg-blue-600/5 border border-blue-500/20 flex items-start gap-3">
             <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
             <p className="text-sm text-slate-300">Metrics are simulated from a 3‑node cluster with 10 backend servers. Actual performance depends on network conditions and hardware.</p>
+          </div>
+        </DocSection>
+
+        {/* NEW: API REFERENCE SECTION */}
+        <DocSection title="API Reference" icon={Server} id="api-reference">
+          <p className="mb-6">
+            The simulation exposes a RESTful API for programmatic control and data extraction. All endpoints return JSON and require no authentication in the lab environment.
+          </p>
+          <div className="space-y-6">
+            <div className="bg-slate-950/50 border border-white/5 rounded-2xl overflow-hidden">
+              <div className="p-5 border-b border-white/5 bg-slate-900/30">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono font-black px-3 py-1 rounded-full bg-green-500/20 text-green-400 border border-green-500/30">GET</span>
+                  <code className="text-sm font-mono text-blue-300">/api/status</code>
+                  <CopyButton text="/api/status" />
+                </div>
+              </div>
+              <div className="p-5">
+                <p className="text-sm text-slate-400 mb-3">Returns current cluster state including server health, active connections, and routing algorithm.</p>
+                <pre className="text-xs font-mono text-slate-500 bg-black/50 p-3 rounded-lg overflow-x-auto">
+                  {`{
+  "nodeId": "lb-7f8e3d2c",
+  "algorithm": "round_robin",
+  "servers": [
+    { "id": "server-1", "healthy": true, "active_connections": 12, "latency": 0.023 },
+    ...
+  ],
+  "total_rps": 47
+}`}
+                </pre>
+              </div>
+            </div>
+            <div className="bg-slate-950/50 border border-white/5 rounded-2xl overflow-hidden">
+              <div className="p-5 border-b border-white/5 bg-slate-900/30">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono font-black px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">POST</span>
+                  <code className="text-sm font-mono text-blue-300">/api/control/start</code>
+                  <CopyButton text="/api/control/start" />
+                </div>
+              </div>
+              <div className="p-5">
+                <p className="text-sm text-slate-400 mb-3">Starts the simulation with given pattern and traffic rate.</p>
+                <div className="mb-3">
+                  <span className="text-xs text-slate-500">Request body:</span>
+                  <pre className="text-xs font-mono text-slate-500 bg-black/50 p-3 rounded-lg mt-1">
+                    {`{
+  "pattern": "constant" | "burst" | "poisson",
+  "rps": 10
+}`}
+                  </pre>
+                </div>
+              </div>
+            </div>
+            <div className="bg-slate-950/50 border border-white/5 rounded-2xl overflow-hidden">
+              <div className="p-5 border-b border-white/5 bg-slate-900/30">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono font-black px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">PUT</span>
+                  <code className="text-sm font-mono text-blue-300">/api/servers/{`{id}`}/toggle</code>
+                  <CopyButton text="/api/servers/{id}/toggle" />
+                </div>
+              </div>
+              <div className="p-5">
+                <p className="text-sm text-slate-400">Toggles server health status (online ↔ offline). Returns updated server object.</p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 p-4 rounded-xl bg-amber-600/5 border border-amber-500/20 flex items-start gap-3">
+            <Info className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-slate-300">WebSocket endpoint <code className="text-xs bg-black/50 px-1.5 py-0.5 rounded">/ws/metrics</code> provides real‑time metrics stream.</p>
           </div>
         </DocSection>
 

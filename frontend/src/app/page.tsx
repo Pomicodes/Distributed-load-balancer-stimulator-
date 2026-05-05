@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useSimulation } from '@/hooks/useSimulation';
 import {
   Activity,
@@ -226,15 +227,20 @@ export default function Dashboard() {
 
         <div className="flex items-center gap-8 relative z-10">
           <div className="hidden lg:flex items-center gap-8">
-            {['Dashboard', 'Analytics', 'Nodes', 'Docs'].map((item) => (
-              <a
-                key={item}
-                href={item === 'Docs' ? '/docs' : item === 'Dashboard' ? '/' : '#'}
+            {[
+              { label: 'Dashboard', href: '/' },
+              { label: 'Analytics', href: '#' },
+              { label: 'Nodes', href: '/node' },
+              { label: 'Docs', href: '/docs' },
+            ].map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
                 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-blue-400 transition-all flex items-center gap-2"
               >
-                {item === 'Docs' ? <Info className="w-3.5 h-3.5" /> : <div className="w-1 h-1 rounded-full bg-slate-700" />}
-                {item}
-              </a>
+                {item.label === 'Docs' ? <Info className="w-3.5 h-3.5" /> : <div className="w-1 h-1 rounded-full bg-slate-700" />}
+                {item.label}
+              </Link>
             ))}
           </div>
 
