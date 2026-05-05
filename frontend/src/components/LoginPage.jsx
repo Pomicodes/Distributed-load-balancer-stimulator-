@@ -38,13 +38,14 @@ function AppleIcon() {
 
 export default function LoginPage() {
   return (
-    <div className="login-root">
+    <div className="login-root"  data-version="1.0.1">
       <div className="login-left">
         <Link href="/" className="login-brand">
           <span className="login-logo" aria-hidden>
             ⇄
           </span>
           <span className="login-brand-text">Distributed Load Balancer</span>
+          <span style={{ display: 'none' }}>v1.0.1</span>
         </Link>
 
         <h1 className="login-h1">Log in</h1>
