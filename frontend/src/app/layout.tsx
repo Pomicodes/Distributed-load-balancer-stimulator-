@@ -23,4 +23,6 @@ export default function RootLayout({
       </body>
     </html>
   );
+  console.log('RootLayout loaded'); 
 }
+// TODO: Add theme preference persistence
